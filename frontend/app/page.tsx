@@ -28,7 +28,7 @@ export default function Home() {
     try {
       setLoading(true)
 
-      const res = await fetch('http://127.0.0.1:8000/predict', {
+      const res = await fetch('https://house-price-prediction-ml1.vercel.app/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
