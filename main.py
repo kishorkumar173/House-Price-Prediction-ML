@@ -73,14 +73,30 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # ================================
-# STEP 5: MODEL TRAINING
+# STEP 5: ADVANCED MODEL TRAINING
 # ================================
 
+from xgboost import XGBRegressor
+
+# Linear Regression
 lr = LinearRegression()
 lr.fit(X_train, y_train)
 
-rf = RandomForestRegressor(n_estimators=100, random_state=42)
+# Random Forest
+rf = RandomForestRegressor(n_estimators=200, random_state=42)
 rf.fit(X_train, y_train)
+
+# XGBoost (NEW)
+xgb = XGBRegressor(
+    n_estimators=500,
+    learning_rate=0.05,
+    max_depth=5,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    random_state=42
+)
+
+xgb.fit(X_train, y_train)
 
 # ================================
 # STEP 6: EVALUATION
@@ -88,6 +104,7 @@ rf.fit(X_train, y_train)
 
 lr_pred = lr.predict(X_test)
 rf_pred = rf.predict(X_test)
+xgb_pred = xgb.predict(X_test)
 
 def evaluate(y_true, y_pred, name):
     print(f"\n{name}")
@@ -97,17 +114,18 @@ def evaluate(y_true, y_pred, name):
 
 evaluate(y_test, lr_pred, "Linear Regression")
 evaluate(y_test, rf_pred, "Random Forest")
+evaluate(y_test, xgb_pred, "XGBoost")
 
 # ================================
 # STEP 7: VISUALIZATION
 # ================================
 
-plt.scatter(y_test, rf_pred)
+plt.scatter(y_test, xgb_pred)
 plt.xlabel("Actual Price")
 plt.ylabel("Predicted Price")
-plt.title("Actual vs Predicted (Random Forest)")
-plt.savefig("outputs/actual_vs_predicted.png")
-plt.close()
+plt.title("Actual vs Predicted (XGBoost)")
+plt.savefig("outputs/xgb_prediction.png")
+plt.show()
 
 # ================================
 # STEP 8: SAMPLE PREDICTION
@@ -115,11 +133,12 @@ plt.close()
 
 sample_house = [[7, 1500, 2, 800, 2, 2005]]
 
-predicted_price = rf.predict(sample_house)
+prediction = xgb.predict(sample_house)
+print("\nXGBoost Predicted Price:", prediction[0])
 
-print("\nSample House Predicted Price:", predicted_price[0])
+# ================================
+# STEP 9: SAVE MODEL
+# ================================
 
-# Save Random Forest model
-joblib.dump(rf, "models/house_price_model.pkl")
-
+joblib.dump(xgb, "models/house_price_model.pkl")
 print("Model saved successfully!")

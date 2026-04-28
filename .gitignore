@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# ML Models (optional if large)
+*.pkl
+
+# Node
+node_modules/
+.next/
+
+# Environment
+.env
+
+# OS
+.DS_Store
